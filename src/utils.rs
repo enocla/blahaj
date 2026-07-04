@@ -164,10 +164,15 @@ fn init_avatar_emojis(conn: &Connection) -> rusqlite::Result<()> {
             guild_id INTEGER NOT NULL,
             emoji_id INTEGER NOT NULL,
             emoji_name TEXT NOT NULL,
+            avatar_url TEXT,
             PRIMARY KEY (user_id, guild_id)
         )",
         [],
     )?;
+
+    if !column_exists(conn, "avatar_emojis", "avatar_url")? {
+        conn.execute("ALTER TABLE avatar_emojis ADD COLUMN avatar_url TEXT", [])?;
+    }
 
     Ok(())
 }
